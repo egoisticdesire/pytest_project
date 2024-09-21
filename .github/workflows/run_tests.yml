@@ -6,11 +6,12 @@ on:
       deployment_target:
         description: Choose deployment target
         required: true
-        default: Run second test
+        default: Run all tests
         type: choice
         options:
           - Run first test
           - Run second test
+          - Run all tests
 
 jobs:
   test:
@@ -38,3 +39,6 @@ jobs:
       - name: Run second test
         if: ${{ github.event.inputs.deployment_target == 'Run second test' }}
         run: pytest -vs test_button_exist.py::test_second_button_exist
+
+      - name: Run all tests
+        run: pytest -vs
