@@ -41,4 +41,5 @@ jobs:
         run: pytest -vs test_button_exist.py::test_second_button_exist
 
       - name: Run all tests
+        if: ${{ github.event.inputs.deployment_target == 'Run all tests' }}
         run: pytest -vs
