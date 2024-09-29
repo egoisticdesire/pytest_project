@@ -34,12 +34,53 @@ jobs:
 
       - name: Run first test
         if: ${{ github.event.inputs.deployment_target == 'Run first test' }}
-        run: pytest -vs test_button_exist.py::test_button_exist
+        run: pytest -vs test_button_exist.py::test_button_exist --alluredir=allure-reports
 
       - name: Run second test
         if: ${{ github.event.inputs.deployment_target == 'Run second test' }}
-        run: pytest -vs test_button_exist.py::test_second_button_exist
+        run: pytest -vs test_button_exist.py::test_second_button_exist --alluredir=allure-reports
 
       - name: Run all tests
         if: ${{ github.event.inputs.deployment_target == 'Run all tests' }}
-        run: pytest -vs
+        run: pytest -vs --alluredir=allure-reports
+
+      - name: Store allure reports
+        uses: actions/upload-artifact@v3
+        with:
+          name: allure-reports
+          path: allure-reports
+          retetion-days: 1
+
+  report:
+    runs-on: ubuntu-latest
+    needs: test
+    name: Generate report
+    
+    steps:
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'microsoft'
+          java-version: '21'
+      - run: sudo wget -P ~/Downloads https://github.com/allure-framework/allure2/releases/download/2.30.0/allure-2.30.0.tgz && sudo tar -zxvf allure-2.30.0.tgz -C /opt/ && sudo ln -s /opt/allure-2.30.0/bin/allure /usr/bin/allure
+      - name: Download all workflow run artifacts
+        uses: actions/download-artifact@v3
+      - run: allure generate -c allure-reports -o _site
+      - name: Store generated report
+        uses: actions/upload-artifact@v3
+        with:
+          name: _site
+          path: _site
+          retetion-days: 1
+
+  publish-report:
+    runs-on: ubuntu-latest
+    needs: report
+    name: Report publication
+    steps:
+      - name: Download all workflow run artifacts
+        uses: actions/download-artifact@v3
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v2
+      - name: Deploy to Github Pages
+        id: deployment
+        uses: actions/deploy-pages@v1.2.9
