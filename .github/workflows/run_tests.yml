@@ -45,11 +45,11 @@ jobs:
         run: pytest -vs --alluredir=allure-reports
 
       - name: Store allure reports
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: allure-reports
           path: allure-reports
-          retetion-days: 1
+          retention-days: 1
 
   report:
     runs-on: ubuntu-latest
@@ -57,12 +57,12 @@ jobs:
     name: Generate report
     
     steps:
-      - uses: actions/setup-java@v3
+      - uses: actions/setup-java@v4
         with:
           distribution: 'microsoft'
           java-version: '21'
           
-      - run: sudo wget -P ~/Downloads https://github.com/allure-framework/allure2/releases/download/2.30.0/allure-2.30.0.tgz && sudo mkdir /opt/ && sudo tar -zxvf ~/Downloads/allure-2.30.0.tgz -C /opt/ && sudo ln -s /opt/allure-2.30.0/bin/allure /usr/bin/allure
+      - run: sudo wget -P ~/Downloads https://github.com/allure-framework/allure2/releases/download/2.30.0/allure-2.30.0.tgz && sudo tar -zxvf ~/Downloads/allure-2.30.0.tgz -C /opt/ && sudo ln -s /opt/allure-2.30.0/bin/allure /usr/bin/allure
           
       - name: Download all workflow run artifacts
         uses: actions/download-artifact@v3
@@ -70,11 +70,11 @@ jobs:
       - run: allure generate -c allure-reports -o _site
       
       - name: Store generated report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: _site
           path: _site
-          retetion-days: 1
+          retention-days: 1
 
   publish-report:
     runs-on: ubuntu-latest
