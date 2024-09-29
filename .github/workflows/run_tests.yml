@@ -62,9 +62,7 @@ jobs:
           distribution: 'microsoft'
           java-version: '21'
           
-      - run: sudo wget -P ~/Downloads https://github.com/allure-framework/allure2/releases/download/2.30.0/allure-2.30.0.tgz \
-          && sudo tar -zxvf ~/Downloads/allure-2.30.0.tgz -C /opt/ \
-          && sudo ln -s /opt/allure-2.30.0/bin/allure /usr/bin/allure
+      - run: sudo wget -P ~/Downloads https://github.com/allure-framework/allure2/releases/download/2.30.0/allure-2.30.0.tgz && sudo mkdir /opt/ && sudo tar -zxvf ~/Downloads/allure-2.30.0.tgz -C /opt/ && sudo ln -s /opt/allure-2.30.0/bin/allure /usr/bin/allure
           
       - name: Download all workflow run artifacts
         uses: actions/download-artifact@v3
